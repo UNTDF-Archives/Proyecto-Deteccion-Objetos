@@ -107,6 +107,7 @@ numpy==1.26.1
 nvidia-cublas-cu11==11.11.3.6
 nvidia-cuda-cupti-cu11==11.8.87
 nvidia-cuda-nvcc-cu11==11.8.89
+nvidia-cuda-nvrtc-cu11==11.8.89
 nvidia-cuda-runtime-cu11==11.8.89
 nvidia-cudnn-cu11==8.7.0.84
 nvidia-cufft-cu11==10.9.0.58
