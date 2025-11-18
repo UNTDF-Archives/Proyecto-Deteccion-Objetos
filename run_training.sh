@@ -10,7 +10,7 @@ SITE_PACKAGES=$(python -c "import site; print(site.getsitepackages()[0])")
 # Configurar LD_LIBRARY_PATH con las rutas de las librerías NVIDIA
 export LD_LIBRARY_PATH="${SITE_PACKAGES}/nvidia/cuda_nvrtc/lib:${SITE_PACKAGES}/nvidia/cudnn/lib:${LD_LIBRARY_PATH}"
 
-# Crear enlace simbólico si no existe
+# Crear enlace simbólico para libnvrtc.so si no existe (necesario para TensorFlow)
 NVRTC_LIB_DIR="${SITE_PACKAGES}/nvidia/cuda_nvrtc/lib"
 if [ -f "${NVRTC_LIB_DIR}/libnvrtc.so.11.2" ] && [ ! -f "${NVRTC_LIB_DIR}/libnvrtc.so" ]; then
     ln -s libnvrtc.so.11.2 "${NVRTC_LIB_DIR}/libnvrtc.so"
