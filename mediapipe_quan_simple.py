@@ -1,56 +1,18 @@
-import os
-import shutil
-import sys
+"""
+Script de entrenamiento para detección de objetos con MediaPipe Model Maker.
 
-# Configurar LD_LIBRARY_PATH y crear enlaces simbólicos ANTES de importar TensorFlow
-# Esto es necesario para que libnvrtc.so sea encontrado por TensorFlow
-site_packages = [p for p in sys.path if 'site-packages' in p]
-if site_packages:
-    # Crear enlace simbólico para libnvrtc.so si no existe
-    nvrtc_lib_dir = os.path.join(site_packages[0], 'nvidia', 'cuda_nvrtc', 'lib')
-    nvrtc_so = os.path.join(nvrtc_lib_dir, 'libnvrtc.so.11.2')
-    nvrtc_link = os.path.join(nvrtc_lib_dir, 'libnvrtc.so')
-    if os.path.exists(nvrtc_so) and not os.path.exists(nvrtc_link):
-        try:
-            os.symlink('libnvrtc.so.11.2', nvrtc_link)
-        except OSError:
-            pass  # El enlace ya existe o no se pudo crear
-    
-    # Configurar LD_LIBRARY_PATH
-    nvidia_lib_paths = [
-        os.path.join(site_packages[0], 'nvidia', 'cuda_nvrtc', 'lib'),
-        os.path.join(site_packages[0], 'nvidia', 'cudnn', 'lib'),
-    ]
-    existing_paths = os.environ.get('LD_LIBRARY_PATH', '').split(':')
-    new_paths = [p for p in nvidia_lib_paths if os.path.exists(p) and p not in existing_paths]
-    if new_paths:
-        current_ld_path = os.environ.get('LD_LIBRARY_PATH', '')
-        os.environ['LD_LIBRARY_PATH'] = ':'.join(new_paths + ([current_ld_path] if current_ld_path else []))
+IMPORTANTE: Para ejecutar con GPU, usa el script wrapper:
+    ./run_training.sh
+
+El wrapper configura LD_LIBRARY_PATH correctamente antes de iniciar Python.
+Si ejecutas directamente con 'python mediapipe_quan_simple.py', puede fallar con GPU.
+"""
 
 from mediapipe_model_maker import object_detector
 from mediapipe_model_maker.python.vision.object_detector import model_spec as ms
+import os
+import shutil
 
-# Configuración de TensorFlow para evitar problemas con cuDNN
-# Si hay problemas con GPU (error de libnvrtc.so o cuDNN), descomenta la siguiente línea:
-# os.environ['CUDA_VISIBLE_DEVICES'] = '-1'  # Esto fuerza el uso de CPU
-
-try:
-    import tensorflow as tf
-    # Configurar TensorFlow para usar memoria GPU de forma dinámica
-    gpus = tf.config.experimental.list_physical_devices('GPU')
-    if gpus:
-        try:
-            for gpu in gpus:
-                tf.config.experimental.set_memory_growth(gpu, True)
-            print(f"GPU configurada: {len(gpus)} dispositivo(s) disponible(s)")
-        except RuntimeError as e:
-            print(f"Error al configurar GPU: {e}")
-            print("Continuando con CPU...")
-    else:
-        print("No se detectó GPU, usando CPU")
-except Exception as e:
-    print(f"Advertencia al configurar TensorFlow: {e}")
-    print("Continuando...")
 
 # Obtener el directorio base del proyecto (donde está este script)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
