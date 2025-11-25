@@ -31,7 +31,7 @@ MODEL_QUAN_PATH = os.path.join(BASE_DIR, "models", "mobilenet_v2_qat.tflite")
 # - Valores típicos: 20-100 para object detection
 # - Más épocas = mejor aprendizaje, pero riesgo de overfitting
 # - 30 épocas es un buen balance para datasets medianos
-EPOCHS = 4
+EPOCHS = 30
 
 # LEARNING_RATE: Tasa de aprendizaje - controla qué tan grandes son los ajustes de pesos
 # - Valores típicos: 0.001 - 0.3 para object detection
@@ -45,13 +45,13 @@ LEARNING_RATE = 0.15
 # - Más alto: entrenamiento más rápido pero requiere más memoria
 # - Más bajo: más estable pero más lento
 # - 8 es ideal para GPUs con memoria limitada (4-8GB) o CPUs
-BATCH_SIZE = 8
+BATCH_SIZE = 16
 
 # DECAY_STEPS: Cada cuántos pasos (batches) se reduce el learning rate
 # - Se usa con DECAY_RATE para implementar "learning rate decay"
 # - 8 pasos significa que cada 8 batches se aplicará la reducción
 # - Ayuda a que el modelo haga ajustes más finos conforme avanza el entrenamiento
-DECAY_STEPS = 8
+DECAY_STEPS = 50
 
 # DECAY_RATE: Factor de multiplicación para reducir el learning rate
 # - Nuevo LR = LR actual × DECAY_RATE
